@@ -2,6 +2,7 @@
 
 namespace Flightsadmin\LivewireCrud\Commands;
 
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Flightsadmin\LivewireCrud\ModelGenerator;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
@@ -64,7 +65,7 @@ abstract class LivewireGeneratorCommand extends Command
      * Controller Namespace.
      * @var string
      */
-    protected $controllerNamespace = 'App\Http\Controllers';  
+    protected $controllerNamespace = 'App\Http\Controllers';
 	/**
      * Controller Namespace.
      * @var string
@@ -83,6 +84,9 @@ abstract class LivewireGeneratorCommand extends Command
      */
     protected $options = [];
 
+    /** @var AbstractSchemaManager */
+    private $schemaManager;
+
     /**
      * Create a new controller creator command instance.
      * @param \Illuminate\Filesystem\Filesystem $files
@@ -98,6 +102,7 @@ abstract class LivewireGeneratorCommand extends Command
         $this->controllerNamespace = config('livewire-crud.controller.namespace', $this->controllerNamespace);
         $this->livewireNamespace = config('livewire-crud.livewire.namespace', $this->livewireNamespace);
         $this->layout = config('livewire-crud.layout', $this->layout);
+        $this->schemaManager = DB::getDoctrineSchemaManager();
     }
 
     /**
@@ -181,11 +186,11 @@ abstract class LivewireGeneratorCommand extends Command
     protected function _getMigrationPath($name)
     {
         return base_path("database/migrations/". date('Y-m-d_His') ."_create_". Str::lower(Str::plural($name)) ."_table.php");
-    } 
+    }
     protected function _getFactoryPath($name)
     {
         return base_path("database/factories/{$name}Factory.php");
-    } 
+    }
 
 	/**
      * @param $name
@@ -358,7 +363,7 @@ abstract class LivewireGeneratorCommand extends Command
         return array_filter($columns, function ($value) use ($unwanted) {
             return !in_array($value, $unwanted);
         });
-    }   
+    }
 
     /**
      * Make model attributes/replacements.
@@ -409,6 +414,59 @@ abstract class LivewireGeneratorCommand extends Command
             return implode(',', $filterColumns);
         };
 
+        $casts = function (){
+            $tableColumns = $this->schemaManager->listTableColumns($this->table);
+
+            $castArr = [];
+            foreach ($tableColumns as $column) {
+                if(!in_array($column->getName(), $this->unwantedColumns)) {
+                    $rule = "'" . $column->getName() . "' => ";
+                    switch (strtolower($column->getType()->getName())) {
+                        case 'integer':
+                        case 'increments':
+                        case 'smallinteger':
+                        case 'long':
+                        case 'biginteger':
+                            $rule .= "'integer'";
+                            break;
+                        case 'double':
+                            $rule .= "'double'";
+                            break;
+                        case 'decimal':
+                            $rule .= sprintf("'decimal:%d'", $field->numberDecimalPoints);
+                            break;
+                        case 'float':
+                            $rule .= "'float'";
+                            break;
+                        case 'boolean':
+                            $rule .= "'boolean'";
+                            break;
+                        case 'datetime':
+                        case 'datetimetz':
+                            $rule .= "'datetime'";
+                            break;
+                        case 'date':
+                            $rule .= "'date'";
+                            break;
+                        case 'enum':
+                        case 'string':
+                        case 'char':
+                        case 'text':
+                            $rule .= "'string'";
+                            break;
+                        default:
+                            $rule = '';
+                            break;
+                    }
+
+                    if (!empty($rule)) {
+                        $castArr[] = $rule;
+                    }
+                }
+            }
+            return "\n\t\t".implode(','."\n\t\t" , $castArr);
+        };
+
         $updatefield = function () {
 
             /** @var array $filterColumns Exclude the unwanted columns */
@@ -421,7 +479,7 @@ abstract class LivewireGeneratorCommand extends Command
 
             // CSV format
             return implode(', ', $filterColumns);
-        };      
+        };
 
 		$resetfields = function () {
 
@@ -436,8 +494,8 @@ abstract class LivewireGeneratorCommand extends Command
 
             // CSV format
             return implode('', $filterColumns);
-        };		
-		
+        };
+
 		$addfields = function () {
 
             /** @var array $filterColumns Exclude the unwanted columns */
@@ -450,8 +508,8 @@ abstract class LivewireGeneratorCommand extends Command
 
             // CSV format
             return implode(',', $filterColumns);
-        };		
-		
+        };
+
 		$keyWord = function () {
 
             /** @var array $filterColumns Exclude the unwanted columns */
@@ -464,7 +522,7 @@ abstract class LivewireGeneratorCommand extends Command
 
             // CSV format
             return implode('', $filterColumns);
-        };	
+        };
 
 		$factoryfields = function () {
 
@@ -479,7 +537,7 @@ abstract class LivewireGeneratorCommand extends Command
             // CSV format
             return implode('', $filterColumns);
         };
-		
+
 		$editfields = function () {
 
             /** @var array $filterColumns Exclude the unwanted columns */
@@ -509,6 +567,7 @@ abstract class LivewireGeneratorCommand extends Command
             '{{properties}}' => $properties,
             '{{softDeletesNamespace}}' => $softDeletesNamespace,
             '{{softDeletes}}' => $softDeletes,
+            '{{casts}}' => $casts()
         ];
     }
 

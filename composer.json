@@ -19,7 +19,8 @@
         "php": "^7.3|^8.0",
         "laravel/framework": "^6.0|^7.0|^8.0",
         "laravel/ui": "^2|^3",
-        "livewire/livewire": "^2"
+        "livewire/livewire": "^2",
+        "doctrine/dbal":"^3.0.0"
     },
     "require-dev": {},
     "autoload": {

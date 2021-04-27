@@ -238,7 +238,7 @@ abstract class LivewireGeneratorCommand extends Command
     protected function _getViewPath($view)
     {
         $name = Str::kebab($this->name);
-
+        $name = Str::camel($this->name);
         return $this->makeDirectory(resource_path("/views/livewire/{$name}s/{$view}.blade.php"));
     }
 

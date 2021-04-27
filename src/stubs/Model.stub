@@ -12,7 +12,7 @@ class {{modelName}} extends Model
     {{softDeletes}}
     public $timestamps = true;
 
-    protected $table = '{{modelNamePluralLowerCase}}';
+    protected $table = '{{tableName}}';
 
     protected $fillable = [{{fillable}}];
 

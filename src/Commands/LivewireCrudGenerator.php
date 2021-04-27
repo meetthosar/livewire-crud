@@ -9,7 +9,7 @@ use File;
 
 class LivewireCrudGenerator extends LivewireGeneratorCommand
 {
-	
+
 	protected $filesystem;
     protected $stubDir;
     protected $argument;
@@ -41,26 +41,26 @@ class LivewireCrudGenerator extends LivewireGeneratorCommand
         // Generate the crud
            $this->buildModel()
 				->buildViews();
-		
+
 		//Updating Routes
         $this->filesystem = new Filesystem;
         $this->argument = $this->getNameInput();
         $routeFile = base_path('routes/web.php');
         $routeContents = $this->filesystem->get($routeFile);
-        $routeItemStub = "\tRoute::view('" . 	$this->getNameInput() . "', 'livewire." . $this->getNameInput() . ".index')->middleware('auth');";
+        $routeItemStub = "\tRoute::view('" . 	Str::Kebab($this->getNameInput()) . "', 'livewire." . Str::Kebab($this->getNameInput()). ".index')->middleware('auth');";
 		$routeItemHook = '//Route Hooks - Do not delete//';
 
         if (!Str::contains($routeContents, $routeItemStub)) {
             $newContents = str_replace($routeItemHook, $routeItemHook . PHP_EOL . $routeItemStub, $routeContents);
             $this->filesystem->put($routeFile, $newContents);
             $this->warn('Route inserted: <info>' . $routeFile . '</info>');
-        }		
-		
+        }
+
 		//Updating Nav Bar
         $layoutFile = 'resources/views/layouts/app.blade.php';
         $layoutContents = $this->filesystem->get($layoutFile);
         $navItemStub = "\t\t\t\t\t\t<li class=\"nav-item\">
-                            <a href=\"{{ url('/".$this->getNameInput()."') }}\" class=\"nav-link\"><i class=\"fab fa-laravel text-info\"></i> ". ucfirst($this->getNameInput()) ."</a> 
+                            <a href=\"{{ url('/".$this->getNameInput()."') }}\" class=\"nav-link\"><i class=\"fab fa-laravel text-info\"></i> ". ucfirst($this->getNameInput()) ."</a>
                         </li>";
         $navItemHook = '<!--Nav Bar Hooks - Do not delete!!-->';
 
@@ -69,7 +69,7 @@ class LivewireCrudGenerator extends LivewireGeneratorCommand
             $this->filesystem->put($layoutFile, $newContents);
             $this->warn('Nav link inserted: <info>' . $layoutFile . '</info>');
         }
-		
+
         $this->info('');
         $this->info('Livewire Component & CRUD Generated Successfully.');
 
@@ -135,12 +135,12 @@ class LivewireCrudGenerator extends LivewireGeneratorCommand
             $form .= $this->getField($title, $column, 'form-field');
 			$form .= "\n";
         }
-		
+
 		foreach ($this->getColumns() as $values) {
 			$type = "text";
             // if (Str::endsWith(($values->Type), ['timestamp', 'date', 'datetime'])) {
                 // $type = "date";
-            // } 
+            // }
 			// elseif (Str::endsWith(($values->Type), 'int')) {
 				// $type = "number";
 			// }
@@ -154,7 +154,7 @@ class LivewireCrudGenerator extends LivewireGeneratorCommand
 				// $type = "text";
 			// }
 		}
-		
+
         $replace = array_merge($this->buildReplacements(), [
             '{{tableHeader}}' => $tableHead,
             '{{tableBody}}' => $tableBody,
@@ -185,7 +185,7 @@ class LivewireCrudGenerator extends LivewireGeneratorCommand
     {
         return Str::studly(Str::singular($this->table));
     }
-	
+
 	private function replace($content)
     {
         foreach ($this->replaces as $search => $replace) {

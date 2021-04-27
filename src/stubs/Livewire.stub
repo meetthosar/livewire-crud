@@ -17,30 +17,29 @@ class {{modelName}}s extends Component
     public function render()
     {
 		$keyWord = '%'.$this->keyWord .'%';
-        return view('livewire.{{modelNamePluralLowerCase}}.view', [
+        return view('livewire.{{modelView}}.view', [
             '{{modelNamePluralLowerCase}}' => {{modelName}}::latest(){{search}}
 						->paginate(10),
         ]);
     }
-	
+
     public function cancel()
     {
         $this->resetInput();
         $this->updateMode = false;
     }
-	
+
     private function resetInput()
     {		{{resetfields}}
     }
 
     public function store()
     {
-        $this->validate([{{rules}}
-        ]);
+        $this->validate({{modelName}}::$rules);
 
         {{modelName}}::create([ {{addfields}}
         ]);
-        
+
         $this->resetInput();
 		$this->emit('closeModal');
 		session()->flash('message', '{{modelName}} Successfully created.');
@@ -51,14 +50,13 @@ class {{modelName}}s extends Component
         $record = {{modelName}}::findOrFail($id);
 
         $this->selected_id = $id; {{editfields}}
-		
+
         $this->updateMode = true;
     }
 
     public function update()
     {
-        $this->validate([{{rules}}
-        ]);
+        $this->validate({{modelName}}::$rules);
 
         if ($this->selected_id) {
 			$record = {{modelName}}::find($this->selected_id);

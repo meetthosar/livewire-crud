@@ -130,7 +130,7 @@ class LivewireCrudGenerator extends LivewireGeneratorCommand
         foreach ($this->getFilteredColumns() as $column) {
             $title = Str::title(str_replace('_', ' ', $column));
 
-            $tableHead .= "\t\t\t\t". $this->getHead($title);
+            $tableHead .= "\t\t\t\t". $this->getHead($column);
             $tableBody .= "\t\t\t\t". $this->getBody($column);
             $form .= $this->getField($title, $column, 'form-field');
             $form .= "\n";

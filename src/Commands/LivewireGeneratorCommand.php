@@ -298,7 +298,8 @@ abstract class LivewireGeneratorCommand extends Command
         return str_replace(
             array_keys($replace),
             array_values($replace),
-            $this->_getSpace(4) . '<th>{{title}}</th>' . "\n"
+            //            $this->_getSpace(4) . '<th>{{title}}</th>' . "\n"
+            $this->_getSpace(4) . '<th>{{ __("{{modelName}}.{{title}}") }}</th>' . "\n"
         );
     }
 
@@ -315,7 +316,8 @@ abstract class LivewireGeneratorCommand extends Command
         return str_replace(
             array_keys($replace),
             array_values($replace),
-            $this->_getSpace(4) . '<td>{{ $row->{{column}} }}</td>' . "\n"
+//            $this->_getSpace(4) . '<th>{{title}}</th>' . "\n"
+            $this->_getSpace(4) . '<th>{{ __("{{modelName}}.{{title}}") }}</th>' . "\n"
         );
     }
 
@@ -435,7 +437,7 @@ abstract class LivewireGeneratorCommand extends Command
                             $rule .= "'double'";
                             break;
                         case 'decimal':
-                            $rule .= sprintf("'decimal:%d'", $field->numberDecimalPoints);
+                            $rule .= sprintf("'decimal:%d'", $column->numberDecimalPoints);
                             break;
                         case 'float':
                             $rule .= "'float'";

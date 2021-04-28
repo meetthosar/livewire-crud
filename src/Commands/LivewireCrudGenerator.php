@@ -47,7 +47,7 @@ class LivewireCrudGenerator extends LivewireGeneratorCommand
         $this->argument = $this->getNameInput();
         $routeFile = base_path('routes/web.php');
         $routeContents = $this->filesystem->get($routeFile);
-        $routeItemStub = "\tRoute::view('" . 	Str::camel($this->getNameInput()) . "', 'livewire." . Str::camel($this->getNameInput()). ".index')->middleware('auth');";
+        $routeItemStub = "\tRoute::view('" . Str::kebab(Str::camel($this->getNameInput())) . "', 'livewire." . Str::kebab(Str::camel($this->getNameInput())). ".index')->middleware('auth');";
         $routeItemHook = '//Route Hooks - Do not delete//';
 
         if (!Str::contains($routeContents, $routeItemStub)) {
@@ -60,7 +60,7 @@ class LivewireCrudGenerator extends LivewireGeneratorCommand
         $layoutFile = 'resources/views/layouts/app.blade.php';
         $layoutContents = $this->filesystem->get($layoutFile);
         $navItemStub = "\t\t\t\t\t\t<li class=\"nav-item\">
-                            <a href=\"{{ url('/".Str::camel($this->getNameInput())."') }}\" class=\"nav-link\"><i class=\"fab fa-laravel text-info\"></i> ".Str::camel($this->getNameInput()) ."</a>
+                            <a href=\"{{ url('/".Str::kebab(Str::camel($this->getNameInput()))."') }}\" class=\"nav-link\"><i class=\"fab fa-laravel text-info\"></i> ".Str::kebab(Str::camel($this->getNameInput())) ."</a>
                         </li>";
         $navItemHook = '<!--Nav Bar Hooks - Do not delete!!-->';
 

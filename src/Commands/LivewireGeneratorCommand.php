@@ -260,7 +260,7 @@ abstract class LivewireGeneratorCommand extends Command
             '{{modelRoute}}' => $this->options['route'] ?? Str::kebab(Str::plural($this->name)),
             '{{modelView}}' => Str::kebab($this->name),
             '{{tableName}}' => $this->table,
-            '{{modelViewPath}}' => Str::kebab(Str::camel($this->name)),
+            '{{modelViewPath}}' => Str::kebab(Str::camel(Str::plural($this->name))),
         ];
     }
 

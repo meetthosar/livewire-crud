@@ -316,8 +316,7 @@ abstract class LivewireGeneratorCommand extends Command
         return str_replace(
             array_keys($replace),
             array_values($replace),
-//            $this->_getSpace(4) . '<th>{{title}}</th>' . "\n"
-            $this->_getSpace(4) . '<th>{{ __("{{modelName}}.{{title}}") }}</th>' . "\n"
+            $this->_getSpace(4) . '<td>{{ $row->{{column}} }}</td>' . "\n"
         );
     }
 

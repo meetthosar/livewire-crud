@@ -1,4 +1,4 @@
             <div class="form-group">
-                <label for="{{column}}">{{ __("modelName.column") }}</label>
-                <input wire:model="{{column}}" type="{{type}}" class="form-control" id="{{column}}" placeholder="{{title}}">@error('{{column}}') <span class="error text-danger">{{ $message }}</span> @enderror
+                <label for="{{column}}">{{ __("{{modelName}}.{{column}}") }}</label>
+                <input wire:model="{{column}}" type="{{type}}" class="form-control" id="{{column}}" placeholder="{{ __("{{modelName}}.{{column}}") }}">@error('{{column}}') <span class="error text-danger">{{ $message }}</span> @enderror
             </div>
